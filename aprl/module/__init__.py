@@ -2,7 +2,7 @@ import hydra
 import hydra_zen
 
 store = hydra_zen.ZenStore(overwrite_ok=True)
-store(dict(defaults=[dict(ocb_mods="???")]), name="base_qf_module")
+store(dict(defaults=[{"aprl/mod": "???"}]), name="base_qf_module")
 
 mods_store = store(group="aprl/mod", package="_global_")
 
@@ -56,9 +56,8 @@ def register(fn, base_args=None, help_msg=None, default_sweep=None, name=None):
     store.add_to_hydra_store(overwrite_ok=True)
 
     # Create CLI endpoint
-    zen_endpoint = hydra_zen.zen(fn)
     api_endpoint = hydra.main(
-        config_name="ocb_mods/" + name, version_base="1.3", config_path="."
-    )(zen_endpoint)
+        config_name="aprl/mod/" + name, version_base="1.3", config_path="."
+    )(hydra_zen.zen(fn))
 
     return api_endpoint, base_args
