@@ -33,7 +33,7 @@ zen_endpoint = hydra_zen.zen(run)
 
 
 # Store the config
-def register_pipeline(name, stages, params, help_msg="", default_sweep=None):
+def register(name, stages, params, help_msg="", default_sweep=None):
     if isinstance(params, dict):
         params = hydra_zen.make_config(**params)
     for stage_name, cfg in stages.items():
