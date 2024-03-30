@@ -13,7 +13,9 @@ args_store = store(group="aprl/mod/args", package="_global_")
 
 
 # Store the config
-def register(fn, base_args=None, help_msg=None, default_sweep=None, name=None):
+def register(
+    fn, base_args=None, help_msg=None, default_sweep=None, name=None, **builds_kwargs
+):
     if name is None:
         name = fn.__name__
     if help_msg is None:
@@ -24,8 +26,7 @@ def register(fn, base_args=None, help_msg=None, default_sweep=None, name=None):
 
     base_config = hydra_zen.builds(
         fn,
-        populate_full_signature=True,
-        zen_partial=False,
+        **(dict(populate_full_signature=True, zen_partial=False) | builds_kwargs),
     )
 
     if base_args is None:
