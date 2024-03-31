@@ -14,8 +14,16 @@ args_store = store(group="aprl/mod/args", package="_global_")
 
 # Store the config
 def register(
-    fn, base_args=None, help_msg=None, default_sweep=None, name=None, **builds_kwargs
+    fn,
+    base_args=None,
+    help_msg=None,
+    default_sweep=None,
+    name=None,
+    builds_kws=None,
+    zen_kws=None,
 ):
+    builds_kws = builds_kws or dict()
+    zen_kws = zen_kws or dict()
     if name is None:
         name = fn.__name__
     if help_msg is None:
@@ -26,7 +34,7 @@ def register(
 
     base_config = hydra_zen.builds(
         fn,
-        **(dict(populate_full_signature=True, zen_partial=False) | builds_kwargs),
+        **(dict(populate_full_signature=True, zen_partial=False) | builds_kws),
     )
 
     if base_args is None:
@@ -36,7 +44,7 @@ def register(
         **base_args,
         bases=(base_config,),
         zen_dataclass={
-            "cls_name": f'{"".join(x.capitalize() for x in name.lower().split("_"))}OcbModArgs'
+            "cls_name": f'{"".join(x.capitalize() for x in name.lower().split("_"))}AprlModArgs'
         },
     )
 
@@ -59,6 +67,6 @@ def register(
     # Create CLI endpoint
     api_endpoint = hydra.main(
         config_name="aprl/mod/" + name, version_base="1.3", config_path="."
-    )(hydra_zen.zen(fn))
+    )(hydra_zen.zen(fn, **zen_kws))
 
     return api_endpoint, base_args
