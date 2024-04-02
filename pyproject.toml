@@ -6,9 +6,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aprl"
 dynamic = ['version']
-dependencies = ["hydra-zen"]
+dependencies = ["hydra-zen", "toolz"]
+
+[project.urls]
+Repository = "https://github.com/quentinf00/aprl-core.git"
 
 
-[project.optional-dependencies]
-experimental = ["toolz"]
-all = ["aprl[experimental]"]
+[project.scripts]
+aprl_run = "aprl.utils.run:aprl_run"
