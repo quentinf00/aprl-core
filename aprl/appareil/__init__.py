@@ -81,18 +81,20 @@ def register(
     )
 
     help_msg = (
-        "=============="
+        "    =============="
         + ""
         + help_msg
         + ""
         + """
-parts
+Parts
 \t"""
         + "\n\t".join([f"{s} -> {parts[s]._target_}" for s in sorted(parts)])
         + ""
         + f"""
-run  with "dry=True hydra.verbose=aprl.appareil" for displaying the doc of each part
-use `to_run=[<part>,...]` to run specify parts\n\n"""
+
+Run  with "dry=True hydra.verbose=aprl.appareil" for displaying the doc of each part
+
+Use `to_run=[<part>,...]` to run specify parts\n\n"""
         + ""
         + ""
     )
