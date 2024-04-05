@@ -7,7 +7,7 @@ store = hydra_zen.ZenStore(overwrite_ok=True)
 store(dict(), name="__placeholder", group="fn")
 
 
-def add_fn(name, cfg):
+def add_fn(name: str, cfg):
     store(cfg, name=name, group="aprl/mod/fn", package="fn")
     store.add_to_hydra_store(overwrite_ok=True)
 

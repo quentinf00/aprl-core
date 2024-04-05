@@ -18,7 +18,7 @@ def call(fn: Callable):
     return fn()
 
 
-def appareil(fn: Callable, inject: dict[str, Callable], params: dict[str, Any]):
+def aprlify(fn: Callable, inject: dict[str, Callable], params: dict[str, Any]):
     log.debug(f"Params {params}")
     log.debug(f"Injecting {inject} to {fn}")
     fn_cfg = OmegaConf.create(hydra_zen.builds(fn))
