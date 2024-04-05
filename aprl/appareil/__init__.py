@@ -23,24 +23,24 @@ def run(
 
     Args:
         to_run: list of parts to run
-        parts: dictionary of stage function
-        params: Place holder for exposing values that can be used in stage configurations
+        parts: dictionary of part function
+        params: Place holder for exposing values that can be used in part configurations
         dry: if true does not execute the parts (can be useful for dispalying logs and debugging)
     """
     log.info("Starting")
-    for stage in to_run:
-        log.info(f"Running stage {stage}")
+    for part in to_run:
+        log.info(f"Running part {part}")
 
-        if hasattr(parts[stage], "func"):
-            log.debug(parts[stage].func.__name__)
-            log.debug(parts[stage].func.__doc__)
+        if hasattr(parts[part], "func"):
+            log.debug(parts[part].func.__name__)
+            log.debug(parts[part].func.__doc__)
 
-        elif hasattr(parts[stage], "__doc__"):
-            log.debug(parts[stage].__doc__)
+        elif hasattr(parts[part], "__doc__"):
+            log.debug(parts[part].__doc__)
 
         if not dry:
-            parts[stage]()
-            log.info(f"Stage {stage} done")
+            parts[part]()
+            log.info(f"part {part} done")
 
     log.info("Done")
 
@@ -60,7 +60,7 @@ def register(
     Args:
         help_msg (): Message describing the parameter values
         name: Name of the appareil used for declaring the Config
-        parts: mapping of stage name to stage function to be called
+        parts: mapping of part name to part function to be called
         params: dictionnary of the appareil parameters, declared in separate config group for easy extension
         default_sweep: default multirun configuration
 
@@ -70,8 +70,8 @@ def register(
     if isinstance(params, dict):
         params = hydra_zen.make_config(**params)
 
-    for stage_name, cfg in parts.items():
-        parts_store(cfg, name=f"{name}-{stage_name}", package=f"parts.{stage_name}")
+    for part_name, cfg in parts.items():
+        parts_store(cfg, name=f"{name}-{part_name}", package=f"parts.{part_name}")
     params_store(params, name=name)
     store = hydra_zen.store()
 
@@ -92,8 +92,8 @@ parts
         + "\n\t".join([f"{s} -> {parts[s]._target_}" for s in sorted(parts)])
         + ""
         + f"""
-run  with "dry=True hydra.verbose=aprl.appareil" for displaying the doc of each stage
-use `to_run=[<stage_name>,...]` to run specify parts\n\n"""
+run  with "dry=True hydra.verbose=aprl.appareil" for displaying the doc of each part
+use `to_run=[<part>,...]` to run specify parts\n\n"""
         + ""
         + ""
     )
