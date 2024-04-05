@@ -14,3 +14,6 @@ Repository = "https://github.com/quentinf00/aprl-core.git"
 
 [project.scripts]
 aprl_run = "aprl.utils.run:aprl_run"
+
+[tool.setuptools.dynamic]
+version = {attr = "aprl.__version__"}
