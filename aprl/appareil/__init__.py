@@ -9,6 +9,8 @@ log = logging.getLogger(__name__)
 store = hydra_zen.ZenStore(overwrite_ok=True)
 parts_store = store(group="aprl/appareil/part", package="part")
 params_store = store(group="aprl/appareil/params", package="params")
+overrides_store = store(group="overrides", package="_global_")
+overrides_store(dict(), name="none")
 
 
 def run(
@@ -106,6 +108,7 @@ use `to_run=[<stage_name>,...]` to run specify parts\n\n"""
         hydra_defaults=[
             {"parts": [f"{name}-{stage_name}" for stage_name in parts]},
             {"params": name},
+            {"/overrides": "none"},
             "_self_",
         ],
     )
