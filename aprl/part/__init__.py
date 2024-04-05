@@ -4,14 +4,17 @@ import hydra
 import hydra_zen
 
 store = hydra_zen.ZenStore(overwrite_ok=True)
-store(dict(defaults=[{"aprl/part": "???"}]), name="base_part")
+overrides_store = store(group="aprl/overrides", package="_global_")
+store(dict(), name="__placeholder", group="overrides", package="_global_")
+overrides_store(dict(), name="none")
+store.add_to_hydra_store(overwrite_ok=True)
 
-parts_store = store(group="aprl/part", package="_global_")
+parts_store = store(group="aprl", package="_global_")
 
 store(
     dict(), name="__placeholder", group="args"
 )  # see https://github.com/facebookresearch/hydra/issues/2875
-args_store = store(group="aprl/part/args", package="_global_")
+args_store = store(group="aprl/args", package="_global_")
 
 
 # Store the config
@@ -77,16 +80,18 @@ def register(
         ),
         defaults=[
             {"args": name},
+            {"overrides": "none"},
             "_self_",
         ],
     )
 
     parts_store(_recipe, name=name)
     store.add_to_hydra_store(overwrite_ok=True)
+    overrides_store.add_to_hydra_store(overwrite_ok=True)
 
     # Create CLI endpoint
     api_endpoint = hydra.main(
-        config_name="aprl/part/" + name, version_base="1.3", config_path="."
+        config_name="aprl/" + name, version_base="1.3", config_path="."
     )(hydra_zen.zen(fn, **zen_kws))
 
     return api_endpoint, base_args

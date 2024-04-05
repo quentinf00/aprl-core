@@ -7,9 +7,10 @@ import hydra_zen
 log = logging.getLogger(__name__)
 
 store = hydra_zen.ZenStore(overwrite_ok=True)
-parts_store = store(group="aprl/appareil/part", package="part")
-params_store = store(group="aprl/appareil/params", package="params")
-overrides_store = store(group="overrides", package="_global_")
+params_store = store(group="aprl/params", package="params")
+overrides_store = store(group="aprl/overrides", package="_global_")
+store(dict(), name="__placeholder", group="params", package="_global_")
+store(dict(), name="__placeholder", group="overrides", package="_global_")
 overrides_store(dict(), name="none")
 
 
@@ -70,8 +71,6 @@ def register(
     if isinstance(params, dict):
         params = hydra_zen.make_config(**params)
 
-    for part_name, cfg in parts.items():
-        parts_store(cfg, name=f"{name}-{part_name}", package=f"parts.{part_name}")
     params_store(params, name=name)
     store = hydra_zen.store()
 
@@ -100,15 +99,15 @@ use `to_run=[<part>,...]` to run specify parts\n\n"""
 
     _recipe = hydra_zen.make_config(
         to_run=tuple(sorted(parts)),
+        parts=parts,
         bases=(base_config,),
         hydra=dict(
             sweeper=dict(params=default_sweep),
             help=dict(header=help_msg, app_name=name),
         ),
         hydra_defaults=[
-            {"parts": [f"{name}-{stage_name}" for stage_name in parts]},
             {"params": name},
-            {"/overrides": "none"},
+            {"overrides": "none"},
             "_self_",
         ],
     )
@@ -116,17 +115,17 @@ use `to_run=[<part>,...]` to run specify parts\n\n"""
         _recipe,
         name=name,
         package="_global_",
-        group="aprl/appareil",
+        group="aprl",
     )
     # Create a  partial configuration associated with the above function (for easy extensibility)
 
     store.add_to_hydra_store(overwrite_ok=True)
-    parts_store.add_to_hydra_store(overwrite_ok=True)
+    overrides_store.add_to_hydra_store(overwrite_ok=True)
     params_store.add_to_hydra_store(overwrite_ok=True)
 
     with hydra.initialize(version_base="1.3", config_path="."):
         cfg = hydra.compose(
-            "aprl/appareil/" + name,
+            "aprl/" + name,
         )
 
     recipe = hydra_zen.make_config(
@@ -142,7 +141,7 @@ use `to_run=[<part>,...]` to run specify parts\n\n"""
     )
     # Create CLI endpoint
     api_endpoint = hydra.main(
-        config_name="aprl/appareil/" + name, version_base="1.3", config_path="."
+        config_name="aprl/" + name, version_base="1.3", config_path="."
     )(zen_endpoint)
 
     return api_endpoint, recipe, params
