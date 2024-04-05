@@ -8,7 +8,7 @@ store(dict(), name="__placeholder", group="fn")
 
 
 def add_fn(name: str, cfg):
-    store(cfg, name=name, group="aprl/mod/fn", package="fn")
+    store(cfg, name=name, group="aprl/part/fn", package="fn")
     store.add_to_hydra_store(overwrite_ok=True)
 
 
