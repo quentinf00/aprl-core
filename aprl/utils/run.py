@@ -12,8 +12,6 @@ def add_fn(name: str, cfg):
     store.add_to_hydra_store(overwrite_ok=True)
 
 
-breakpoint()
-
 aprl_run, aprl_cfg = aprl.part.register(aprl.utils.call)
 aprl_pcfg = aprl.utils.make_partial(aprl_cfg)
 
